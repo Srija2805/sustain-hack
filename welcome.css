@@ -1,0 +1,138 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f8ff;
+    color: #333;
+}
+
+/* Fixes top bar button visibility */
+.top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #007BFF; /* Blue top bar */
+    color: white;
+    display: flex;
+    justify-content: flex-end;
+    padding: 15px 20px; /* Increased padding */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    flex-wrap: wrap; /* Ensures buttons wrap if screen is small */
+}
+
+.top-buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.top-button {
+    background-color: white;
+    color: #007BFF;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    transition: 0.3s;
+}
+
+.top-button:hover {
+    background-color: #0056b3;
+    color: white;
+}
+
+.main-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-image: url('images/img1.webp'); /* Path to your image */
+    background-size: cover;
+    background-position: center;
+    text-align: center;
+    transition: background-image 1s ease-in-out;
+}
+
+
+.main-title {
+    font-size: 48px;
+    font-weight: bold;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 10px; 
+    transition: transform 0.3s ease-in-out;
+}
+
+.main-title:hover {
+    transform: scale(1.1);
+}
+.company-section {
+    text-align: center;
+    padding: 50px 20px;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.company-section h2 {
+    font-size: 32px;
+    color: #007BFF;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Flex container for horizontal alignment */
+.company-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* Enhanced company box styling */
+.company-box {
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: #007BFF; /* Default text color */
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background-color 0.3s, color 0.3s;
+    width: 250px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    
+    /* Fancy border */
+    border: 3px solid #007BFF;
+}
+
+/* Hover Effect - Change background to blue & text to white */
+.company-box:hover {
+    transform: scale(1.1);
+    background-color: #007BFF;
+    color: white;
+    box-shadow: 0 10px 20px rgba(0, 123, 255, 0.3);
+}
+
+
+/* Copyright Footer */
+.footer {
+    background-color: #007BFF; /* Blue footer */
+    color: white;
+    text-align: center;
+    padding: 15px;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    font-size: 14px;
+}

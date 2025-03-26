@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 0;
+        }
+
+        .register-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .register-box {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 350px;
+            text-align: center;
+        }
+
+        .register-box h2 {
+            color: #007BFF;
+            margin-bottom: 20px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #007BFF;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .input-field:focus {
+            border-color: #0056b3;
+            outline: none;
+        }
+
+        .register-btn {
+            background-color: #007BFF;
+            color: #ffffff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            width: 100%;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .register-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+        }
+
+        .success-message {
+            color: green;
+            font-size: 14px;
+        }
+        
+        select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #007BFF;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-box">
+            <h2>Register</h2>
+            <form id="registerForm" onsubmit="return validateForm()">
+                <input type="text" id="username" class="input-field" placeholder="Username" required>
+                <input type="email" id="email" class="input-field" placeholder="Email" required>
+                <input type="password" id="password" class="input-field" placeholder="Password" required>
+                <input type="password" id="confirmPassword" class="input-field" placeholder="Confirm Password" required>
+                <input type="text" id="area" class="input-field" placeholder="Area" required>
+                <input type="text" id="pinCode" class="input-field" placeholder="Pin Code" required>
+                <select id="state" class="input-field" required>
+                    <option value="" disabled selected>Select State</option>
+                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+                    <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                    <option value="Assam">Assam</option>
+                    <option value="Bihar">Bihar</option>
+                    <option value="Chhattisgarh">Chhattisgarh</option>
+                    <option value="Goa">Goa</option>
+                    <option value="Gujarat">Gujarat</option>
+                    <option value="Haryana">Haryana</option>
+                    <option value="Himachal Pradesh">Himachal Pradesh</option>
+                    <option value="Jharkhand">Jharkhand</option>
+                    <option value="Karnataka">Karnataka</option>
+                    <option value="Kerala">Kerala</option>
+                    <option value="Madhya Pradesh">Madhya Pradesh</option>
+                    <option value="Maharashtra">Maharashtra</option>
+                    <option value="Manipur">Manipur</option>
+                    <option value="Meghalaya">Meghalaya</option>
+                    <option value="Mizoram">Mizoram</option>
+                    <option value="Nagaland">Nagaland</option>
+                    <option value="Odisha">Odisha</option>
+                    <option value="Punjab">Punjab</option>
+                    <option value="Rajasthan">Rajasthan</option>
+                    <option value="Sikkim">Sikkim</option>
+                    <option value="Tamil Nadu">Tamil Nadu</option>
+                    <option value="Telangana">Telangana</option>
+                    <option value="Tripura">Tripura</option>
+                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                    <option value="Uttarakhand">Uttarakhand</option>
+                    <option value="West Bengal">West Bengal</option>
+                </select>
+                <button type="submit" class="register-btn">Register</button>
+            </form>
+            <p class="error-message" id="error-message"></p>
+            <p class="success-message" id="success-message"></p>
+        </div>
+    </div>
+
+    <script>
+        function validateForm() {
+            var username = document.getElementById('username').value;
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            var confirmPassword = document.getElementById('confirmPassword').value;
+            var area = document.getElementById('area').value;
+            var pinCode = document.getElementById('pinCode').value;
+            var state = document.getElementById('state').value;
+            var errorMessage = document.getElementById('error-message');
+            var successMessage = document.getElementById('success-message');
+
+            // Clear previous messages
+            errorMessage.textContent = '';
+            successMessage.textContent = '';
+
+            // Password validation (8 characters and at least one special character)
+            var passwordRegex = /^(?=.[!@#$%^&(),.?":{}|<>])[A-Za-z\d@$!%*?&]{8,}$/;
+            if (!passwordRegex.test(password)) {
+                errorMessage.textContent = 'Password must be at least 8 characters long and contain at least one special character!';
+                return false;
+            }
+
+            // Check if passwords match
+            if (password !== confirmPassword) {
+                errorMessage.textContent = 'Passwords do not match!';
+                return false;
+            }
+
+            // Check if pin code is numeric
+            if (isNaN(pinCode) || pinCode.length !== 6) {
+                errorMessage.textContent = 'Please enter a valid 6-digit Pin Code!';
+                return false;
+            }
+
+            // Check if state is selected
+            if (state === "") {
+                errorMessage.textContent = 'Please select a state!';
+                return false;
+            }
+
+            // If everything is valid, show a success message
+            successMessage.textContent = 'Registration successful!';
+            return false; // Prevent form submission for demonstration purposes
+        }
+    </script>
+</body>
+</html>
