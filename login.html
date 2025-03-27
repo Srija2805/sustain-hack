@@ -10,11 +10,14 @@
             background-color: #f0f8ff;
             margin: 0;
             padding: 0;
+            min-height: 100vh; /* Added to ensure footer stays at bottom */
+            display: flex;
+            flex-direction: column;
         }
 
         .login-container {
             width: 100%;
-            height: 100vh;
+            flex: 1; /* Allows container to grow */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -41,6 +44,7 @@
             border: 2px solid #007BFF;
             border-radius: 5px;
             font-size: 16px;
+            box-sizing: border-box; /* Added for consistent sizing */
         }
 
         .input-field:focus {
@@ -66,14 +70,15 @@
         .error-message {
             color: red;
             font-size: 14px;
+            margin: 10px 0; /* Added spacing */
         }
 
         .success-message {
             color: green;
             font-size: 14px;
+            margin: 10px 0; /* Added spacing */
         }
 
-        /* Sign Up Link */
         .sign-up-link {
             margin-top: 10px;
             font-size: 14px;
@@ -87,18 +92,15 @@
         .sign-up-link a:hover {
             text-decoration: underline;
         }
-        /* Copyright Footer */
-.footer {
-    background-color: #007BFF; /* Blue footer */
-    color: white;
-    text-align: center;
-    padding: 15px;
-    position: relative;
-    bottom: 0;
-    width: 100%;
-    font-size: 14px;
-}
 
+        .footer {
+            background-color: #007BFF;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            width: 100%;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -108,24 +110,25 @@
             <form id="loginForm" onsubmit="return validateForm()">
                 <input type="text" id="username" class="input-field" placeholder="Username" required>
                 <input type="password" id="password" class="input-field" placeholder="Password" required>
-                <input type="password" id="confirmPassword" class="input-field" placeholder="Confirm Password" required>
                 <button type="submit" class="login-btn">Login</button>
             </form>
             <p class="error-message" id="error-message"></p>
             <p class="success-message" id="success-message"></p>
 
-            <!-- Sign up link -->
             <div class="sign-up-link">
                 <p>Not registered? <a href="register.html">Sign Up</a></p>
             </div>
         </div>
     </div>
 
+    <div class="footer">
+        &copy; 2025 Your Company. All rights reserved.
+    </div>
+
     <script>
         function validateForm() {
             var username = document.getElementById('username').value;
             var password = document.getElementById('password').value;
-            var confirmPassword = document.getElementById('confirmPassword').value;
             var errorMessage = document.getElementById('error-message');
             var successMessage = document.getElementById('success-message');
 
@@ -133,15 +136,20 @@
             errorMessage.textContent = '';
             successMessage.textContent = '';
 
-            // Check if passwords match
-            if (password !== confirmPassword) {
-                errorMessage.textContent = 'Passwords do not match!';
+            // Basic validation
+            if (username.length < 3) {
+                errorMessage.textContent = 'Username must be at least 3 characters long';
+                return false;
+            }
+
+            if (password.length < 6) {
+                errorMessage.textContent = 'Password must be at least 6 characters long';
                 return false;
             }
 
             // If successful, show a success message
-            successMessage.textContent = 'Form submitted successfully!';
-            return false; // Prevent form submission for demonstration purposes
+            successMessage.textContent = 'Login successful!';
+            return false; // Prevent form submission for demonstration
         }
     </script>
 </body>

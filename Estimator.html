@@ -19,6 +19,47 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            flex-direction: column;
+        }
+
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #007BFF;
+            color: white;
+            display: flex;
+            justify-content: center;
+            padding: 15px 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            flex-wrap: wrap;
+        }
+
+        .top-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .top-button {
+            background-color: white;
+            color: #007BFF;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            border: none;
+            transition: 0.3s;
+            width: 100px;
+            text-align: center;
+        }
+
+        .top-button:hover {
+            background-color: #0056b3;
+            color: white;
         }
 
         .container {
@@ -62,24 +103,37 @@
         }
 
         footer {
+            background-color: #007BFF;
+            color: white;
             text-align: center;
-            padding: 10px;
-            color: #fff;
-            font-size: 0.9rem;
+            padding: 15px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            font-size: 14px;
         }
 
         #recommendation {
             margin-top: 20px;
             padding: 20px;
-            background: rgba(49, 27, 27, 0.8);
+            background: #f5f5f5;
             border-radius: 15px;
             text-align: center;
             font-size: 1.2rem;
             color: #333;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
 <body>
+
+    <div class="top-bar">
+        <div class="top-buttons">
+            <button class="top-button">Home</button>
+            <a href="Guide.html" class="top-button">Guide</a>
+            <button class="top-button">Contact</button>
+        </div>
+    </div>
 
     <div class="container">
         <div class="card" onclick="displayRecommendation(15)">
@@ -105,6 +159,11 @@
             <div class="speed">10 km/h</div>
             <div class="status">Mild breeze</div>
         </div>
+        <div class="card" onclick="displayRecommendation(30)">
+            <div class="location">Hyderabad, Telangana</div>
+            <div class="speed">30 km/h</div>
+            <div class="status">Gusty winds</div>
+        </div>
 
         <div class="card" onclick="displayRecommendation(22)">
             <div class="location">Jaipur, Rajasthan</div>
@@ -123,11 +182,10 @@
         function displayRecommendation(speed) {
             const recommendation = document.getElementById("recommendation");
 
-            // Logic to determine whether a windmill or solar panel is better
             if (speed >= 15) {
-                recommendation.innerHTML = Wind speed is ${speed} km/h. A <strong>windmill</strong> is recommended as it can generate efficient energy at higher wind speeds.;
+                recommendation.innerHTML = `Wind speed is ${speed} km/h. A <strong>windmill</strong> is recommended as it can generate efficient energy at higher wind speeds.`;
             } else {
-                recommendation.innerHTML = Wind speed is ${speed} km/h. A <strong>solar panel</strong> is recommended as the wind speed is not high enough for efficient wind energy production.;
+                recommendation.innerHTML = `Wind speed is ${speed} km/h. A <strong>solar panel</strong> is recommended as the wind speed is not high enough for efficient wind energy production.`;
             }
         }
     </script>

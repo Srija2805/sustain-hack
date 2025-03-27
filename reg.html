@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 0;
+        }
+
+        .register-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .register-box {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 350px;
+            text-align: center;
+        }
+
+        .register-box h2 {
+            color: #007BFF;
+            margin-bottom: 20px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #007BFF;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .input-field:focus {
+            border-color: #0056b3;
+            outline: none;
+        }
+
+        .register-btn {
+            background-color: #007BFF;
+            color: #ffffff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            width: 100%;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .register-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+        }
+
+        .success-message {
+            color: green;
+            font-size: 14px;
+        }
+        
+        select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #007BFF;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        #area, #state {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-box">
+            <h2>Register</h2>
+            <form id="registerForm" onsubmit="return validateForm()">
+                <input type="text" id="username" class="input-field" placeholder="Username" required>
+                <input type="email" id="email" class="input-field" placeholder="Email" required>
+                <input type="password" id="password" class="input-field" placeholder="Password" required>
+                <input type="password" id="confirmPassword" class="input-field" placeholder="Confirm Password" required>
+                <input type="text" id="pinCode" class="input-field" placeholder="Pin Code" required oninput="generateLocation()">
+                <input type="text" id="area" class="input-field" placeholder="Mandal/Area (Auto-generated)" readonly required>
+                <select id="state" class="input-field" required disabled>
+                    <option value="" disabled selected>Select State</option>
+                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+                    <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                    <option value="Assam">Assam</option>
+                    <option value="Bihar">Bihar</option>
+                    <option value="Chhattisgarh">Chhattisgarh</option>
+                    <option value="Goa">Goa</option>
+                    <option value="Gujarat">Gujarat</option>
+                    <option value="Haryana">Haryana</option>
+                    <option value="Himachal Pradesh">Himachal Pradesh</option>
+                    <option value="Jharkhand">Jharkhand</option>
+                    <option value="Karnataka">Karnataka</option>
+                    <option value="Kerala">Kerala</option>
+                    <option value="Madhya Pradesh">Madhya Pradesh</option>
+                    <option value="Maharashtra">Maharashtra</option>
+                    <option value="Manipur">Manipur</option>
+                    <option value="Meghalaya">Meghalaya</option>
+                    <option value="Mizoram">Mizoram</option>
+                    <option value="Nagaland">Nagaland</option>
+                    <option value="Odisha">Odisha</option>
+                    <option value="Punjab">Punjab</option>
+                    <option value="Rajasthan">Rajasthan</option>
+                    <option value="Sikkim">Sikkim</option>
+                    <option value="Tamil Nadu">Tamil Nadu</option>
+                    <option value="Telangana">Telangana</option>
+                    <option value="Tripura">Tripura</option>
+                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                    <option value="Uttarakhand">Uttarakhand</option>
+                    <option value="West Bengal">West Bengal</option>
+                </select>
+                <button type="submit" class="register-btn">Register</button>
+            </form>
+            <p class="error-message" id="error-message"></p>
+            <p class="success-message" id="success-message"></p>
+        </div>
+    </div>
+
+    <script>
+        // Sample pin code to location mapping (expand with real data)
+        const locationData = {
+            "520001": { state: "Andhra Pradesh", area: "Vijayawada" },
+            "522002": { state: "Andhra Pradesh", area: "Guntur" },
+            "530001": { state: "Andhra Pradesh", area: "Visakhapatnam" },
+            "500001": { state: "Telangana", area: "Hyderabad" },
+            "506002": { state: "Telangana", area: "Warangal" },
+            "505001": { state: "Telangana", area: "Karimnagar" },
+            "560001": { state: "Karnataka", area: "Bangalore" },
+            "570001": { state: "Karnataka", area: "Mysore" },
+            "580001": { state: "Karnataka", area: "Hubli" },
+            // Add more pin codes with their corresponding states and areas
+        };
+
+        function generateLocation() {
+            const pinCode = document.getElementById('pinCode').value;
+            const areaField = document.getElementById('area');
+            const stateField = document.getElementById('state');
+            const errorMessage = document.getElementById('error-message');
+
+            // Clear previous values and error
+            areaField.value = '';
+            stateField.value = '';
+            errorMessage.textContent = '';
+
+            if (pinCode.length === 6 && !isNaN(pinCode)) {
+                if (locationData[pinCode]) {
+                    areaField.value = locationData[pinCode].area;
+                    stateField.value = locationData[pinCode].state;
+                } else {
+                    errorMessage.textContent = 'Pin code not found in database';
+                    areaField.value = 'Unknown Area';
+                    stateField.value = '';
+                }
+            } else if (pinCode.length > 0) {
+                errorMessage.textContent = 'Please enter a valid 6-digit pin code';
+            }
+        }
+
+        function validateForm() {
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const pinCode = document.getElementById('pinCode').value;
+            const area = document.getElementById('area').value;
+            const state = document.getElementById('state').value;
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
+
+            // Clear previous messages
+            errorMessage.textContent = '';
+            successMessage.textContent = '';
+
+            // Username validation
+            if (username.length < 3) {
+                errorMessage.textContent = 'Username must be at least 3 characters long!';
+                return false;
+            }
+
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                errorMessage.textContent = 'Please enter a valid email address!';
+                return false;
+            }
+
+            // Password validation
+            const passwordRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d@$!%*?&]{8,}$/;
+            if (!passwordRegex.test(password)) {
+                errorMessage.textContent = 'Password must be at least 8 characters with one special character!';
+                return false;
+            }
+
+            // Password match
+            if (password !== confirmPassword) {
+                errorMessage.textContent = 'Passwords do not match!';
+                return false;
+            }
+
+            // Pin code validation
+            if (pinCode.length !== 6 || isNaN(pinCode)) {
+                errorMessage.textContent = 'Please enter a valid 6-digit pin code!';
+                return false;
+            }
+
+            // Area validation
+            if (!area || area === 'Unknown Area') {
+                errorMessage.textContent = 'Invalid area generated from pin code!';
+                return false;
+            }
+
+            // State validation
+            if (!state) {
+                errorMessage.textContent = 'Invalid state generated from pin code!';
+                return false;
+            }
+
+            successMessage.textContent = 'Registration successful!';
+            return false; // Prevent form submission for demonstration
+        }
+    </script>
+</body>
+</html>

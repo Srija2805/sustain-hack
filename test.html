@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SunWind Advisory - Solar and Wind Energy Recommendations</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Same CSS styles as provided earlier */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --solar: #F59E0B;
+      --solar-light: #FBBF24;
+      --wind: #0EA5E9;
+      --wind-light: #38BDF8;
+      --primary: #1E40AF;
+      --primary-foreground: #F0F4F8;
+      --background: #F8FAFC;
+      --foreground: #020617;
+      --card: #FFFFFF;
+      --card-foreground: #020617;
+      --border: #E2E8F0;
+      --muted: #F1F5F9;
+      --muted-foreground: #64748B;
+      --radius: 0.75rem;
+    }
+
+    /* Rest of the CSS remains the same */
+    html, body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to bottom, #F0F9FF, #FFFFFF);
+      color: var(--foreground);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* ... (keeping all other styles unchanged) ... */
+  </style>
+</head>
+<body>
+  <!-- Same HTML structure as provided -->
+  <div class="page-background">
+    <div class="container">
+      <!-- Header, form, and other sections remain the same -->
+      <header class="text-center mb-12 relative">
+        <!-- ... header content ... -->
+      </header>
+      
+      <main class="mx-auto max-w-3xl">
+        <!-- ... form and other sections ... -->
+      </main>
+      
+      <footer>
+        <p>SunWind Advisory © 2023 | Disclaimer: This is a demonstration tool. Please consult with renewable energy professionals for accurate assessments.</p>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const locationForm = document.getElementById('locationForm');
+      const analyzeButton = document.getElementById('analyzeButton');
+      const analyzingIndicator = document.getElementById('analyzingIndicator');
+      const resultsSection = document.getElementById('resultsSection');
+      const advisoryCardContainer = document.getElementById('advisoryCardContainer');
+      const costEstimatorContainer = document.getElementById('costEstimatorContainer');
+      
+      locationForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (validateForm()) {
+          const formData = {
+            village: document.getElementById('village').value,
+            mandal: document.getElementById('mandal').value,
+            district: document.getElementById('district').value,
+            pincode: document.getElementById('pincode').value,
+            state: document.getElementById('state').value
+          };
+          
+          analyzeButton.textContent = 'Analyzing Location...';
+          analyzeButton.disabled = true;
+          analyzingIndicator.classList.remove('hidden');
+          
+          setTimeout(() => {
+            analyzeLocation(formData);
+            analyzingIndicator.classList.add('hidden');
+            analyzeButton.textContent = 'Analyze Location';
+            analyzeButton.disabled = false;
+            resultsSection.classList.remove('hidden');
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+          }, 1500);
+        }
+      });
+      
+      function validateForm() {
+        let isValid = true;
+        const village = document.getElementById('village');
+        const district = document.getElementById('district');
+        const pincode = document.getElementById('pincode');
+        const state = document.getElementById('state');
+        
+        document.querySelectorAll('.error-message').forEach(el => {
+          el.classList.add('hidden');
+          el.textContent = '';
+        });
+        
+        if (!village.value.trim()) {
+          showError('village', 'Village/City is required');
+          isValid = false;
+        }
+        if (!district.value.trim()) {
+          showError('district', 'District is required');
+          isValid = false;
+        }
+        if (!pincode.value.trim()) {
+          showError('pincode', 'Pincode is required');
+          isValid = false;
+        } else if (!/^\d{6}$/.test(pincode.value)) {
+          showError('pincode', 'Pincode must be 6 digits');
+          isValid = false;
+        }
+        if (!state.value.trim()) {
+          showError('state', 'State is required');
+          isValid = false;
+        }
+        
+        return isValid;
+      }
+      
+      function showError(fieldId, message) {
+        const errorElement = document.getElementById(`${fieldId}Error`);
+        errorElement.textContent = message;
+        errorElement.classList.remove('hidden');
+      }
+      
+      function analyzeLocation(data) {
+        const solarAssessment = isSolarSuitable(data.pincode);
+        const windAssessment = isWindSuitable(data.pincode);
+        const recommendation = getRecommendation(solarAssessment, windAssessment);
+        const costs = recommendation.type !== 'none' 
+          ? calculateCostEstimates(recommendation.type, recommendation.confidence)
+          : null;
+        
+        renderAdvisoryCard({
+          type: recommendation.type,
+          confidence: recommendation.confidence,
+          solarReason: solarAssessment.reason,
+          windReason: windAssessment.reason,
+          location: data
+        });
+        
+        if (recommendation.type !== 'none' && costs) {
+          renderCostEstimator({
+            installationType: recommendation.type,
+            costs: costs
+          });
+        } else {
+          costEstimatorContainer.innerHTML = '';
+        }
+      }
+      
+      function isSolarSuitable(pincode) {
+        const firstTwoDigits = pincode.substring(0, 2);
+        const highSolarRegions = ['50', '51', '52', '53', '56', '40', '41', '30', '31', '32', '33', '34'];
+        const mediumSolarRegions = ['11', '12', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '42', '43'];
+        
+        if (highSolarRegions.includes(firstTwoDigits)) {
+          return { suitable: true, confidence: 0.9, reason: "Excellent solar radiation throughout the year" };
+        }
+        if (mediumSolarRegions.includes(firstTwoDigits)) {
+          return { suitable: true, confidence: 0.7, reason: "Moderate solar radiation suitable for installation" };
+        }
+        return { suitable: true, confidence: 0.5, reason: "Acceptable solar potential" };
+      }
+      
+      function isWindSuitable(pincode) {
+        const firstTwoDigits = pincode.substring(0, 2);
+        const highWindRegions = ['36', '37', '38', '39', '40', '41', '42', '43', '62', '63'];
+        
+        if (highWindRegions.includes(firstTwoDigits)) {
+          return { suitable: true, confidence: 0.8, reason: "Strong wind patterns suitable for turbines" };
+        }
+        return { suitable: false, confidence: 0.4, reason: "Insufficient wind speed for efficient generation" };
+      }
+      
+      function getRecommendation(solar, wind) {
+        if (solar.suitable && wind.suitable) {
+          return {
+            type: 'hybrid',
+            confidence: Math.max(solar.confidence, wind.confidence)
+          };
+        } else if (solar.suitable) {
+          return {
+            type: 'solar',
+            confidence: solar.confidence
+          };
+        } else if (wind.suitable) {
+          return {
+            type: 'wind',
+            confidence: wind.confidence
+          };
+        }
+        return {
+          type: 'none',
+          confidence: 0
+        };
+      }
+      
+      function calculateCostEstimates(type, confidence) {
+        const baseCosts = {
+          solar: { installation: 50000, maintenance: 2000 },
+          wind: { installation: 100000, maintenance: 5000 },
+          hybrid: { installation: 140000, maintenance: 7000 }
+        };
+        
+        const costMultiplier = confidence >= 0.8 ? 1.2 : confidence >= 0.6 ? 1 : 0.8;
+        const costs = baseCosts[type];
+        
+        return {
+          installation: Math.round(costs.installation * costMultiplier),
+          maintenance: Math.round(costs.maintenance * costMultiplier),
+          paybackYears: Math.round(8 / confidence)
+        };
+      }
+      
+      function renderAdvisoryCard(data) {
+        let recommendationText, gradientClass;
+        switch(data.type) {
+          case 'solar':
+            recommendationText = 'Solar Panel Installation';
+            gradientClass = 'solar-gradient';
+            break;
+          case 'wind':
+            recommendationText = 'Wind Turbine Installation';
+            gradientClass = 'wind-gradient';
+            break;
+          case 'hybrid':
+            recommendationText = 'Hybrid Solar-Wind System';
+            gradientClass = 'hybrid-gradient';
+            break;
+          default:
+            recommendationText = 'No Recommendation';
+            gradientClass = '';
+        }
+        
+        advisoryCardContainer.innerHTML = `
+          <div class="glass-card animate-fade-in">
+            <div class="card-header ${gradientClass}">
+              <h2 class="text-xl font-medium text-white">Recommendation for ${data.location.village}, ${data.location.district}</h2>
+            </div>
+            <div class="card-content">
+              <div class="space-y-4">
+                <div>
+                  <h3 class="font-medium mb-2">Recommended System</h3>
+                  <p class="text-sm">${recommendationText}</p>
+                  <div class="badge badge-blue mt-2">Confidence: ${(data.confidence * 100).toFixed(0)}%</div>
+                </div>
+                <div>
+                  <h3 class="font-medium mb-2">Solar Assessment</h3>
+                  <p class="text-sm">${data.solarReason}</p>
+                </div>
+                <div>
+                  <h3 class="font-medium mb-2">Wind Assessment</h3>
+                  <p class="text-sm">${data.windReason}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+      
+      function renderCostEstimator(data) {
+        costEstimatorContainer.innerHTML = `
+          <div class="glass-card animate-fade-in">
+            <div class="card-header">
+              <h2 class="text-xl font-medium">Cost Estimates</h2>
+            </div>
+            <div class="card-content">
+              <div class="space-y-4">
+                <div>
+                  <h3 class="font-medium mb-2">Installation Type</h3>
+                  <p class="text-sm">${data.installationType.charAt(0).toUpperCase() + data.installationType.slice(1)}</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <h3 class="font-medium mb-2">Installation Cost</h3>
+                    <p class="text-sm">₹${data.costs.installation.toLocaleString()}</p>
+                  </div>
+                  <div>
+                    <h3 class="font-medium mb-2">Annual Maintenance</h3>
+                    <p class="text-sm">₹${data.costs.maintenance.toLocaleString()}</p>
+                  </div>
+                </div>
+                <div>
+                  <h3 class="font-medium mb-2">Estimated Payback Period</h3>
+                  <p class="text-sm">${data.costs.paybackYears} years</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+    });
+  </script>
+</body>
+</html>

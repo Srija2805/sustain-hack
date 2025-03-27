@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SunWind Advisory - Solar and Wind Energy Recommendations</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Reset and base styles */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --solar: #F59E0B;
+      --solar-light: #FBBF24;
+      --wind: #0EA5E9;
+      --wind-light: #38BDF8;
+      --primary: #1E40AF;
+      --primary-foreground: #F0F4F8;
+      --background: #F8FAFC;
+      --foreground: #020617;
+      --card: #FFFFFF;
+      --card-foreground: #020617;
+      --border: #E2E8F0;
+      --muted: #F1F5F9;
+      --muted-foreground: #64748B;
+      --radius: 0.75rem;
+    }
+
+    html, body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to bottom, #F0F9FF, #FFFFFF);
+      color: var(--foreground);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    .glass-card {
+      background-color: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: var(--radius);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .glass-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .glass-panel {
+      background-color: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: var(--radius);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .solar-gradient {
+      background: linear-gradient(to right, #FFB84D, #F59E0B);
+    }
+
+    .wind-gradient {
+      background: linear-gradient(to right, #38BDF8, #0EA5E9);
+    }
+    
+    .hybrid-gradient {
+      background: linear-gradient(to right, #F59E0B, #38BDF8, #0EA5E9);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: -0.015em;
+    }
+
+    .label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .input {
+      width: 100%;
+      height: 2.5rem;
+      padding: 0 0.75rem;
+      background-color: rgba(255, 255, 255, 0.5);
+      border: 1px solid var(--border);
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(30, 64, 175, 0.2);
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border: none;
+      border-radius: 0.375rem;
+      background-color: var(--primary);
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .button:hover {
+      background-color: #1E3A8A;
+    }
+
+    .button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .card-header {
+      padding: 1.25rem 1.25rem 0.5rem;
+    }
+
+    .card-content {
+      padding: 1.25rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 9999px;
+      padding: 0.125rem 0.625rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      line-height: 1.25rem;
+    }
+
+    .badge-green {
+      background-color: rgba(34, 197, 94, 0.1);
+      color: rgb(22, 163, 74);
+    }
+
+    .badge-blue {
+      background-color: rgba(59, 130, 246, 0.1);
+      color: rgb(37, 99, 235);
+    }
+
+    .badge-amber {
+      background-color: rgba(245, 158, 11, 0.1);
+      color: rgb(217, 119, 6);
+    }
+
+    .badge-red {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: rgb(220, 38, 38);
+    }
+
+    .space-y-1 > * + * {
+      margin-top: 0.25rem;
+    }
+
+    .space-y-2 > * + * {
+      margin-top: 0.5rem;
+    }
+
+    .space-y-4 > * + * {
+      margin-top: 1rem;
+    }
+
+    .space-y-6 > * + * {
+      margin-top: 1.5rem;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 0.5rem;
+      background-color: var(--muted);
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+
+    .progress-bar-value {
+      height: 100%;
+      border-radius: 9999px;
+      background: linear-gradient(to right, var(--solar-light), var(--solar));
+      transition: width 1s ease-in-out;
+    }
+
+    .flex {
+      display: flex;
+    }
+
+    .flex-col {
+      flex-direction: column;
+    }
+
+    .items-center {
+      align-items: center;
+    }
+
+    .justify-center {
+      justify-content: center;
+    }
+
+    .justify-between {
+      justify-between: space-between;
+    }
+
+    .gap-2 {
+      gap: 0.5rem;
+    }
+
+    .gap-4 {
+      gap: 1rem;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .relative {
+      position: relative;
+    }
+
+    .absolute {
+      position: absolute;
+    }
+
+    .inset-0 {
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+
+    .mt-2 {
+      margin-top: 0.5rem;
+    }
+
+    .mt-4 {
+      margin-top: 1rem;
+    }
+
+    .mt-6 {
+      margin-top: 1.5rem;
+    }
+
+    .mb-2 {
+      margin-bottom: 0.5rem;
+    }
+
+    .mb-4 {
+      margin-bottom: 1rem;
+    }
+
+    .mb-6 {
+      margin-bottom: 1.5rem;
+    }
+
+    .p-4 {
+      padding: 1rem;
+    }
+
+    .p-6 {
+      padding: 1.5rem;
+    }
+
+    .py-2 {
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
+    }
+
+    .w-full {
+      width: 100%;
+    }
+
+    .max-w-md {
+      max-width: 28rem;
+    }
+
+    .max-w-lg {
+      max-width: 32rem;
+    }
+
+    .max-w-xl {
+      max-width: 36rem;
+    }
+
+    .mx-auto {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .rounded-lg {
+      border-radius: 0.5rem;
+    }
+
+    .error-message {
+      color: rgb(220, 38, 38);
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+    }
+
+    .animate-pulse {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    .opacity-10 {
+      opacity: 0.1;
+    }
+
+    /* Icons */
+    .icon {
+      width: 1.5rem;
+      height: 1.5rem;
+      flex-shrink: 0;
+    }
+    
+    .icon-sm {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+
+    .text-solar {
+      color: var(--solar);
+    }
+
+    .text-wind {
+      color: var(--wind);
+    }
+
+    .text-primary {
+      color: var(--primary);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    .animate-float {
+      animation: float 3s ease-in-out infinite;
+    }
+
+    /* Layout */
+    .page-background {
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .page-background::before,
+    .page-background::after {
+      content: '';
+      position: absolute;
+      width: 24rem;
+      height: 24rem;
+      border-radius: 0 0 0 100%;
+      opacity: 0.2;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .page-background::before {
+      top: 0;
+      right: 0;
+      background-image: url('https://images.unsplash.com/photo-1509391366360-2e959784a276?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80');
+      background-size: cover;
+    }
+
+    .page-background::after {
+      bottom: 0;
+      left: 0;
+      background-image: url('https://images.unsplash.com/photo-1466611653911-95081537e5b7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80');
+      background-size: cover;
+      border-radius: 0 100% 0 0;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    /* Responsive Grid */
+    @media (min-width: 768px) {
+      .grid-cols-2 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .bg-gray-50 {
+      background-color: rgba(249, 250, 251, 0.8);
+    }
+
+    footer {
+      margin-top: 3rem;
+      text-align: center;
+      color: var(--muted-foreground);
+      font-size: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-background">
+    <div class="container">
+      <header class="text-center mb-12 relative">
+        <div class="flex justify-center gap-4 items-center mb-6">
+          <div class="relative">
+            <svg class="icon text-solar animate-float" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+          </div>
+          <div class="relative">
+            <svg class="icon text-wind animate-float" style="animation-delay: 0.5s" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"></path>
+            </svg>
+          </div>
+        </div>
+        
+        <div class="relative">
+          <h1 class="text-4xl font-semibold text-gray-900 mb-3">
+            SunWind Advisory
+          </h1>
+        </div>
+        
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+          Find out if your location in India is suitable for solar panels, wind turbines, or both
+        </p>
+      </header>
+      
+      <main class="mx-auto max-w-3xl">
+        <section class="mb-12">
+          <h2 class="text-xl font-medium text-gray-800 mb-4 text-center">Enter Your Location Details</h2>
+          <div class="glass-card w-full max-w-xl mx-auto animate-fade-in">
+            <div class="card-content">
+              <form id="locationForm" class="space-y-5">
+                <div class="space-y-1">
+                  <label for="village" class="label">Village/City Name</label>
+                  <input
+                    id="village"
+                    name="village"
+                    class="input"
+                    placeholder="Enter village or city name"
+                    required
+                  />
+                  <div id="villageError" class="error-message hidden"></div>
+                </div>
+                
+                <div class="space-y-1">
+                  <label for="mandal" class="label">Mandal/Tehsil/Taluka</label>
+                  <input
+                    id="mandal"
+                    name="mandal"
+                    class="input"
+                    placeholder="Enter mandal, tehsil or taluka"
+                  />
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="space-y-1">
+                    <label for="district" class="label">District</label>
+                    <input
+                      id="district"
+                      name="district"
+                      class="input"
+                      placeholder="Enter district"
+                      required
+                    />
+                    <div id="districtError" class="error-message hidden"></div>
+                  </div>
+                  
+                  <div class="space-y-1">
+                    <label for="pincode" class="label">Pincode</label>
+                    <input
+                      id="pincode"
+                      name="pincode"
+                      class="input"
+                      placeholder="Enter 6-digit pincode"
+                      maxlength="6"
+                      required
+                    />
+                    <div id="pincodeError" class="error-message hidden"></div>
+                  </div>
+                </div>
+                
+                <div class="space-y-1">
+                  <label for="state" class="label">State</label>
+                  <input
+                    id="state"
+                    name="state"
+                    class="input"
+                    placeholder="Enter state"
+                    required
+                  />
+                  <div id="stateError" class="error-message hidden"></div>
+                </div>
+                
+                <button 
+                  type="submit" 
+                  id="analyzeButton"
+                  class="button w-full"
+                >
+                  Analyze Location
+                </button>
+              </form>
+            </div>
+          </div>
+        </section>
+        
+        <!-- Analyzing indicator (hidden by default) -->
+        <div id="analyzingIndicator" class="flex flex-col items-center justify-center py-10 hidden">
+          <div class="flex gap-4 items-center mb-4">
+            <svg class="icon text-solar" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <div class="h-2 w-24 bg-solar animate-pulse rounded-full"></div>
+          </div>
+          <div class="flex gap-4 items-center">
+            <svg class="icon text-wind" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"></path>
+            </svg>
+            <div class="h-2 w-32 bg-wind animate-pulse rounded-full"></div>
+          </div>
+          <p class="mt-4 text-sm text-gray-500">Analyzing your location data...</p>
+        </div>
+        
+        <!-- Results Section (hidden by default) -->
+        <section id="resultsSection" class="space-y-6 pb-16 hidden">
+          <!-- Advisory Card will be inserted here by JavaScript -->
+          <div id="advisoryCardContainer"></div>
+          
+          <!-- Cost Estimator will be inserted here by JavaScript -->
+          <div id="costEstimatorContainer"></div>
+        </section>
+
+        <!-- Educational section -->
+        <section class="mt-16 mb-12 px-4">
+          <div class="glass-card rounded-lg p-6 mb-8">
+            <h2 class="text-2xl font-medium text-gray-800 mb-4">Why Renewable Energy?</h2>
+            <div class="grid grid-cols-2 gap-6">
+              <div class="space-y-3">
+                <div class="flex items-center gap-2">
+                  <svg class="icon-sm text-solar" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                  </svg>
+                  <h3 class="font-medium">Solar Energy Benefits</h3>
+                </div>
+                <p class="text-sm text-gray-600">Solar energy is clean, renewable, and increasingly affordable. In India, with abundant sunshine, solar installations can provide reliable power while reducing electricity bills.</p>
+              </div>
+              <div class="space-y-3">
+                <div class="flex items-center gap-2">
+                  <svg class="icon-sm text-wind" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"></path>
+                  </svg>
+                  <h3 class="font-medium">Wind Energy Benefits</h3>
+                </div>
+                <p class="text-sm text-gray-600">Wind energy harnesses natural air currents to generate electricity. Wind turbines in suitable locations can produce significant power with minimal environmental impact.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+      
+      <footer>
+        <p>SunWind Advisory &copy; 2023 | Disclaimer: This is a demonstration tool. Please consult with renewable energy professionals for accurate assessments.</p>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    // Main application logic
+    document.addEventListener('DOMContentLoaded', function() {
+      const locationForm = document.getElementById('locationForm');
+      const analyzeButton = document.getElementById('analyzeButton');
+      const analyzingIndicator = document.getElementById('analyzingIndicator');
+      const resultsSection = document.getElementById('resultsSection');
+      const advisoryCardContainer = document.getElementById('advisoryCardContainer');
+      const costEstimatorContainer = document.getElementById('costEstimatorContainer');
+      
+      // Form validation and submission
+      locationForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (validateForm()) {
+          // Get form data
+          const formData = {
+            village: document.getElementById('village').value,
+            mandal: document.getElementById('mandal').value,
+            district: document.getElementById('district').value,
+            pincode: document.getElementById('pincode').value,
+            state: document.getElementById('state').value
+          };
+          
+          // Show analyzing indicator and hide form button
+          analyzeButton.textContent = 'Analyzing Location...';
+          analyzeButton.disabled = true;
+          analyzingIndicator.classList.remove('hidden');
+          
+          // Simulate API call with timeout
+          setTimeout(() => {
+            analyzeLocation(formData);
+            
+            // Hide analyzing indicator
+            analyzingIndicator.classList.add('hidden');
+            analyzeButton.textContent = 'Analyze Location';
+            analyzeButton.disabled = false;
+            
+            // Show results section
+            resultsSection.classList.remove('hidden');
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+          }, 1500);
+        }
+      });
+      
+      function validateForm() {
+        let isValid = true;
+        const village = document.getElementById('village');
+        const district = document.getElementById('district');
+        const pincode = document.getElementById('pincode');
+        const state = document.getElementById('state');
+        
+        // Reset error messages
+        document.querySelectorAll('.error-message').forEach(el => {
+          el.classList.add('hidden');
+          el.textContent = '';
+        });
+        
+        // Validate village
+        if (!village.value.trim()) {
+          showError('village', 'Village/City is required');
+          isValid = false;
+        }
+        
+        // Validate district
+        if (!district.value.trim()) {
+          showError('district', 'District is required');
+          isValid = false;
+        }
+        
+        // Validate pincode
+        if (!pincode.value.trim()) {
+          showError('pincode', 'Pincode is required');
+          isValid = false;
+        } else if (!/^\d{6}$/.test(pincode.value)) {
+          showError('pincode', 'Pincode must be 6 digits');
+          isValid = false;
+        }
+        
+        // Validate state
+        if (!state.value.trim()) {
+          showError('state', 'State is required');
+          isValid = false;
+        }
+        
+        return isValid;
+      }
+      
+      function showError(fieldId, message) {
+        const errorElement = document.getElementById(`${fieldId}Error`);
+        errorElement.textContent = message;
+        errorElement.classList.remove('hidden');
+      }
+      
+      function analyzeLocation(data) {
+        // Get suitability assessments
+        const solarAssessment = isSolarSuitable(data.pincode);
+        const windAssessment = isWindSuitable(data.pincode);
+        
+        // Get recommendation based on assessments
+        const recommendation = getRecommendation(
+          { suitable: solarAssessment.suitable, confidence: solarAssessment.confidence },
+          { suitable: windAssessment.suitable, confidence: windAssessment.confidence }
+        );
+        
+        // Calculate costs for the recommended installation type
+        const costs = recommendation.type !== 'none' 
+          ? calculateCostEstimates(recommendation.type, recommendation.confidence)
+          : null;
+        
+        // Render the advisory card
+        renderAdvisoryCard({
+          type: recommendation.type,
+          confidence: recommendation.confidence,
+          solarReason: solarAssessment.reason,
+          windReason: windAssessment.reason,
+          location: {
+            village: data.village,
+            district: data.district,
+            state: data.state,
+            pincode: data.pincode
+          }
+        });
+        
+        // Render the cost estimator if applicable
+        if (recommendation.type !== 'none' && costs) {
+          renderCostEstimator({
+            installationType: recommendation.type,
+            costs: costs
+          });
+        } else {
+          costEstimatorContainer.innerHTML = '';
+        }
+      }
+      
+      // Function to determine if solar installation is suitable based on pincode
+      function isSolarSuitable(pincode) {
+        // Extract the first two digits which could represent a region in India
+        const firstTwoDigits = pincode.substring(0, 2);
+        const firstDigit = parseInt(pincode.charAt(0));
+        
+        // High solar regions (simplified example)
+        const highSolarRegions = ['50', '51', '52', '53', '56', '40', '41', '30', '31', '32', '33', '34'];
+        
+        if (highSolarRegions.includes(firstTwoDigits)) {
+          return { 
+            suitable: true, 
+            confidence: 0.9,
+            reason: "This region receives excellent solar radiation throughout the year."
+          };
+        }
+        
+        // Medium solar regions
+        const mediumSolarRegions = ['11', '12', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '42', '43'];
+        
+        if (mediumSolarRegions.includes(firstTwoDigits)) {
+          return { 
+            suitable: true, 
+            confidence: 0.7,
+            reason: "This region receives moderate solar radiation and would benefit from solar installation."
+          };
+        }
+        
+        // For demo purposes, most areas will be considered somewhat suitable
+        return { 
+          suitable: firstDigit % 2 === 0, // Simple algorithmic decision for demo
+          confidence: 0.5,
+          reason: "Based on available data, this location has acceptable solar potential."
+        };
+      }
+      
+      
